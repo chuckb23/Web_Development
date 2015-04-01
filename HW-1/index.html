@@ -1,0 +1,482 @@
+﻿<!DOCTYPE html>
+<!-- "html" is the "root" element of our HTML document.  Any XML-based document can only have a single root node -->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>2015-01-26 JS Lecture</title>
+    <link rel="stylesheet" href="reset.css" type="text/css" />
+    <script type="text/javascript" src="jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" src="jquery-ui-1.10.4.min.js"></script>
+    <style type="text/css">
+        body {
+            background-image: url("bg.png");
+            background-color: #cccccc;
+            font: 16px #FFFFFF verdana;
+            color: #FFFFFF;
+            text-align:justify;
+        }
+        .box {
+            border: 5.5px solid transparent;
+            background-clip: padding-box;
+            width: 187px;
+            height: 187px;
+            float: left;
+            vertical-align: text-bottom;
+            display: table-cell;
+        }
+        
+        #column-1{
+            margin-left:auto;
+            margin-right:auto;
+            width:480px;
+        }
+
+        
+        #column-4 {
+            float: left;
+            width: 50%;
+        }
+        #column-5 {
+            float: right;
+            width: calc(50% - 56px);
+        }
+        #column-container{
+            width:50%;
+            margin:0 auto;
+            text-align:center;
+        }
+        #column-container-1 {
+            width: calc(50% - 56px);
+            float:right;
+        }
+        #column-2 {
+            float: left;
+            width: 50%;
+
+        }
+        #column-3 {
+            float: right;
+            width: calc(50% - 56px);
+        }
+
+       
+        #column-container-big {
+            width: 1800px;
+            margin: 0 auto;
+        }
+        #redistribute-button
+        {
+            clear:both;
+        }
+        .double-box {
+            border: 5.5px solid transparent;
+            background-clip: padding-box;
+            width: 384px;
+            height: 187px;
+            float: left;
+        }
+        #overlay {
+            visibility: hidden;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            z-index: 1000;
+        }
+         #overlay div {
+                width: 500px;
+                height:500px;
+                margin: 100px auto;
+                background-color: #fff;
+                border: 1px solid #000;
+                padding: 15px;
+                text-align: center;
+            }
+    </style>
+
+    <!-- consider putting in a separate JS file when satisfied with product -->
+    <script type="text/javascript">
+       
+       
+        //only run our code after HTML has been rendered
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+        function overlay() {
+            el = document.getElementById("overlay");
+            el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+        }
+        function whichElement(e) {
+            var targ;
+            if (!e) {
+                var e = window.event;
+            }
+            if (e.target) {
+                targ = e.target;
+            } else if (e.srcElement) {
+                targ = e.srcElement;
+            }
+            var tname;
+            tname = targ.textContent;
+            overlay();
+            
+        }
+        $(document).ready(function () {
+            var labels = ["lipsum", "hello", "ibr", "fuschia", "football", "micrsoft", "elway", "john", "tuesday", "pick", "tuta", "bella"];
+
+           
+            var colors = ["#2672EC", "#00A300", "#97009F", "#094DB5", "#DA532C", "#AF1A3F", "#613CBC", "#008AD2"];
+            var screenWidth = (screen.width / window.devicePixelRatio);
+            //document.write(screenWidth);
+            
+            if (screenWidth < 1000) {
+                var obj = document.getElementById("column-container-big");
+                obj.id = "column-1";
+                document.getElementById("column-1").textContent = "yello";
+                var container = $('#column-container');
+               // container.append('<div id="column-1"></div>');
+                document.body.style.backgroundImage = "url('black.jpg')";
+                var col1 = $('#column-1');
+                for (var i = 0; i < randomInt(34, 64) ; i++) {
+                    col1.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)]
+                        + '">' + labels[randomInt(0,11)] + '</div>');
+                }
+            }
+            else if (screenWidth < 1100) {
+                var obj = document.getElementById("column-container-big");
+                obj.id = "column-container";
+                obj.style.width = '920px';
+                var container = $('#column-container');
+                container.append('<div id="column-2">');
+                container.append('</div>');
+                container.append('<div id="column-3">');
+                container.append('</div>');
+                var col1 = $('#column-2');
+                var col2 = $('#column-3');
+                var col1_count = 0;
+                var col2_count = 0;
+                for (var i = 0; i < randomInt(34, 64) ; i++) {
+                    col1_count = col1.find('.box').size() + col1.find('.double-box').size() * 2;
+                    col2_count = col2.find('.box').size() + col2.find('.double-box').size() * 2;
+                    if (col1_count <= (col2_count)) {
+                        if (randomInt(0, 5) == 5) {
+                            if (col1_count % 2 == 0) {
+                                col1.append('<div class="double-box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                            }
+                            else {
+                                col1.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                            }
+                        }
+                        else {
+                            col1.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                        }
+                    }
+                    else {
+                        if (randomInt(0, 5) == 5) {
+                            if (col2_count % 2 == 0) {
+                                col2.append('<div class="double-box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                            }
+                            else {
+                                col2.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                            }//col1.last()
+                            col2.append('<div class="double-box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                        }
+                        else {
+                            col2.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                        }
+                    }
+                    
+                 // resize(0);
+                    
+                }
+               
+               
+            }
+            else {
+                var container = $('#column-container-big');
+                container.append('<div id="column-container">') ;
+                container.append('<div id="column-2"></div>');
+                container.append('<div id="column-3"></div>');
+                container.append('</div>');
+                container.append('<div id="column-container-1">') ;
+               
+                container.append('<div id="column-4"></div>');
+                container.append('<div id="column-5"></div>');
+
+                container.append('</div>');
+                var obj = document.getElementById("column-2");
+                obj.style.width = '450px';
+                obj.style.marginLeft = '26px';
+                var obj = document.getElementById("column-3");
+                obj.style.width = '420px';
+                obj.style.cssFloat = 'left';
+                var obj = document.getElementById("column-4");
+                obj.style.width = '450px';
+                obj.style.cssFloat = 'right';
+                var obj = document.getElementById("column-5");
+                obj.style.width = '420px';
+                obj.style.cssFloat = 'right';
+                var col1 = $('#column-2');
+                var col2 = $('#column-3');
+                var col3 = $('#column-4');
+                var col4 = $('#column-5');
+                col1.onmou
+                var col1_count = col1.find('.box').size() + col1.find('.double-box').size() * 2;
+                var col2_count = col2.find('.box').size() + col2.find('.double-box').size() * 2;
+                var col3_count = col3.find('.box').size() + col3.find('.double-box').size() * 2;
+                var col4_count = col4.find('.box').size() + col4.find('.double-box').size() * 2;
+                for (var i = 0; i < randomInt(34, 64) ; i++) {
+                    var least = leastcheck(1);
+                            if (least == 1) {
+                                if (randomInt(0, 5) == 5) {
+                                    if (col1_count % 2 == 0) {
+                                        col1.append('<div class="double-box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                                    }
+                                    else {
+                                        col1.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                                    }
+                                }
+                                else {
+                                    col1.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                                }
+                            }
+                            else if (least == 2) {
+                                if (randomInt(0, 5) == 5) {
+                                    if (col2_count % 2 == 0) {
+                                        col2.append('<div class="double-box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                                    }
+                                    else {
+                                        col2.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                                    }
+                                }
+                                else {
+                                    col2.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                                }
+                            }
+                            else if (least == 3) {
+                                if (randomInt(0, 5) == 5) {
+                                    if (col3_count % 2 == 0) {
+                                        col3.append('<div class="double-box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                                    }
+                                    else {
+                                        col3.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                                    }
+                                }
+                                else {
+                                    col3.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                                }
+                            }
+                            else if (least == 4) {
+                                if (randomInt(0, 5) == 5) {
+                                    if (col4_count % 2 == 0) {
+                                        col4.append('<div class="double-box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                                    }
+                                    else {
+                                        col4.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                                    }
+                                }
+                                else {
+                                    col4.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                                }
+                            }
+                            else {
+                                col1.append('<div class="box" style ="background-color:' + colors[randomInt(0, 7)] + '">' + labels[randomInt(0, 11)] + '</div>');
+                            }
+                            
+                        }
+                    }
+                   
+                    //resize(1);
+                
+            
+
+            //create a bunch (50) boxes
+
+            //col1.append('<div class="box-right">' + i + '</div>');
+            //listen for button clicks
+            function leastcheck(x) {
+                var col1 = $('#column-2');
+                var col2 = $('#column-3');
+                var col3 = $('#column-4');
+                var col4 = $('#column-5');
+                var col1_count = col1.find('.box').size() + col1.find('.double-box').size() * 2;
+                var col2_count = col2.find('.box').size() + col2.find('.double-box').size() * 2;
+                var col3_count = col3.find('.box').size() + col3.find('.double-box').size() * 2;
+                var col4_count = col4.find('.box').size() + col4.find('.double-box').size() * 2;
+                x = 1;
+                if ((col1_count <= col2_count) && (col1_count <= col3_count) && (col1_count <= col4_count)) {
+                    return x;
+                }
+                if ((col2_count < col1_count) && (col2_count <= col3_count) && (col2_count <= col4_count)) {
+                    x = 2;
+                    return x;
+                }
+                if ((col3_count < col2_count) && (col3_count < col2_count) && (col3_count <= col4_count)) {
+                    x=3
+                    return x;
+                }
+                if ((col4_count < col1_count) && (col4_count < col2_count) &&(col4_count < col3_count)) {
+                    x = 4;
+                    return x;
+                }
+                return x;
+            }
+            function resize(size) {
+               
+                var container = $('#column-container');
+                
+                //grab references to my two columns
+                if (size == 0) {
+                   // var col1 = document.getElementsByID('column-container column-2');
+                   // var col2 = document.getElementsByID('column-container column-3');
+                    var col1 = $('#column-2');
+                    var col2 = $('#column-3');
+
+                    //grab column counts
+                    var col1_count = col1.find('.box').size() + col1.find('.double-box').size()*2;
+                    var col2_count = col2.find('.box').size() + col2.find('.double-box').size()*2;
+
+                    //AC: if this were real, we'd need to track more than one case
+                    if (col1_count > col2_count - 1) {
+
+                        var to_add = (col1_count - col2_count) / 2;
+
+                        for (var i = to_add; i > 0; i--) {
+                            //get last box in first column
+                            var last_box = col1.find('*').last(); //annotate this
+                            //add to top of colmun 2
+
+                            col2.prepend(last_box);
+                        }
+                    }
+                }
+                if (size == 1) {
+                    var col1 = $('#column-2');
+                    var col2 = $('#column-3');
+                    var col3 = $('#column-4');
+                    var col4 = $('#column-5');
+                    //grab column counts
+                    var col1_count = col1.find('.box').size() + col1.find('.double-box').size()*2;
+                    var col2_count = col2.find('.box').size() + col2.find('.double-box').size()*2;
+                    var col3_count = col3.find('.box').size() + col3.find('.double-box').size()*2;
+                    var col4_count = col4.find('.box').size() + col4.find('.double-box').size()*2;
+                    //AC: if this were real, we'd need to track more than one case
+                    if (col1_count >= (col2_count-1)) {
+
+                        var to_add = (col1_count - col2_count) / 2;
+
+                        for (var i = to_add; i > 0; i--) {
+                            //get last box in first column
+                            var last_box = col1.find('*').last(); //annotate this
+                            //add to top of colmun 2
+                            if (col2_count % 2 == 0) {
+                                col2.prepend(last_box);
+                            }
+                            else {
+                                last_box = col1.find('.box').last();
+                                col2.prepend(last_box);
+                            }
+                            
+                        }
+                    }
+                    if (col2_count >= (col3_count-1)) {
+                        var to_add = (col2_count - col3_count) / 2;
+                        for (var i = to_add; i > 0; i--) {
+                            //get last box in first column
+                            var last_box = col2.find('*').last(); //annotate this
+                            //add to top of colmun 2
+
+                            if (col3_count % 2 == 0) {
+                                col3.prepend(last_box);
+                            }
+                            else {
+                                last_box = col2.find('.box').last();
+                                col3.prepend(last_box);
+                            }
+                        }
+                    }
+                    if (col3_count >= (col4_count-1)) {
+                        var to_add = (col3_count - col4_count) / 2;
+
+                        for (var i = to_add; i > 0; i--) {
+                            //get last box in first column
+                            var last_box = col3.find('*').last(); //annotate this
+                            //add to top of colmun 2
+
+                            if (col4_count % 2 == 0) {
+                                col4.prepend(last_box);
+                            }
+                            else {
+                                last_box = col3.find('.box').last();
+                                col4.prepend(last_box);
+                            }
+                        }
+                    }
+                }
+            }
+
+           
+            
+            //document.addEventListener("DOMContentLoaded", init, false);
+          
+           /* function init() {
+                var canvas = document.getElementById("column-container-big");
+                canvas.addEventListener("mousedown", getPosition, false);
+                window.alert(canvas);
+            }
+
+            function getPosition(event) {
+                var x = new Number();
+                var y = new Number();
+                var canvas = document.getElementById("column--container-big");
+                window.alert("x: " + x + "  y: " + y);
+                if (event.x != undefined && event.y != undefined) {
+                    x = event.x;
+                    y = event.y;
+                }
+                else // Firefox method to get the position
+                {
+                    x = event.clientX + document.body.scrollLeft +
+                        document.documentElement.scrollLeft;
+                    y = event.clientY + document.body.scrollTop +
+                        document.documentElement.scrollTop;
+                }
+
+                x -= canvas.offsetLeft;
+                y -= canvas.offsetTop;
+
+                window.alert("x: " + x + "  y: " + y);
+            }*/
+        });
+
+     
+    </script>
+</head>
+
+<body onmousedown="whichElement(event)">
+    <header id="main-header">
+        <nav id="main-links">
+        </nav>
+    </header>
+    <div id="content">
+        <article>
+            <div id="column-container-big"></div>  
+            
+        </article>
+        <article>
+            <div id="overlay">
+                <div>
+                    <p>Content you want the user to see goes here.</p>  
+                </div>
+            </div>
+             
+        </article>
+        
+    </div>
+    <footer>
+    </footer>
+</body>
+</html>
+>

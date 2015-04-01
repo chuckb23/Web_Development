@@ -1,0 +1,148 @@
+﻿<!-- 
+    sources: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes
+             https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Basic_animations
+             http://diveintohtml5.info/canvas.html
+    -->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <script type="text/javascript" src="jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" src="jquery-ui-1.10.4.min.js"></script>
+    <title></title>
+    <script type="text/javascript">
+        var SCREEN_WIDTH = 900;
+        var SCREEN_HEIGHT = 600;
+
+        var RADIUS = 70;
+
+        var RADIUS_SCALE = 1;
+        var RADIUS_SCALE_MIN = 1;
+        var RADIUS_SCALE_MAX = 1.5;
+        var QUANTITY = 30; 
+        
+        //var balls = Array();
+        var comets = Array();
+        var canvas = null;
+        var context = null;
+        var shipImages = new Image();
+        var aliens = null;
+        var mouseX = (window.innerWidth - SCREEN_WIDTH);
+        var mouseY = (window.innerHeight - SCREEN_HEIGHT) - 20;
+        //create our comet array
+        function createComets() {
+            comets = [];
+
+            for (var i = 0; i < QUANTITY; i++) {
+                var comet = {
+                    positionx: mouseX, 
+                    positiony: mouseY,
+                    shiftx: mouseX,
+                    shifty: mouseY ,
+                    size: 1,
+                    angle: 0,
+                    speed: 0.01 + Math.random() * 0.08,
+                    targetSize: 1,
+                    fillColor: '#' + (Math.random() * 0x404040 + 0xaaaaaa | 0).toString(16),
+                    orbit: RADIUS * .5 + (RADIUS * .5 * Math.random())
+                };
+
+                comets.push(comet);
+            }
+        }
+
+        function beginDraw()
+        {
+            //TODO: set up any state before main render loop
+            
+            //add key press event listeners
+           
+            document.getElementById("canvas").addEventListener("click", canvasClicked, false);
+            document.getElementById("canvas").addEventListener("mousemove", canvasMoved, false);
+           // document.getElementById("canvas").addEventListener('mousedown', documentMouseDownHandler, false);
+          //  document.getElementById("canvas").addEventListener('mouseup', documentMouseUpHandler, false);
+            shipImages.src = 'ships.png';
+            canvas = document.getElementById("canvas");
+            context = canvas.getContext("2d");
+            createComets();
+            windowResizeHandler();
+            setInterval(loop, 1000 / 60);
+        }
+
+        function loop()
+        {
+            RADIUS_SCALE = Math.min(RADIUS_SCALE, RADIUS_SCALE_MAX);
+
+            // Fade out the lines slowly by drawing a rectangle over the entire canvas
+            context.fillStyle = 'rgba(0,0,0,0.05)';
+            context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+            
+            for (i = 0; i < comets.length; i++) {
+                var comet = comets[i];
+
+                var lp = { x: comet.positionx, y: comet.positiony };
+
+                // Offset the angle to keep the spin going
+                comet.angle += comet.speed;
+
+                // Follow mouse with some lag
+                comet.shiftx += (mouseX - comet.shiftx) * (comet.speed);
+                comet.shifty += (mouseY - comet.shifty) * (comet.speed);
+
+                // Apply position
+                comet.positionx = comet.shiftx + Math.cos(i + comet.angle) * (comet.orbit * RADIUS_SCALE);
+                comet.positiony = comet.shifty + Math.sin(i + comet.angle) * (comet.orbit * RADIUS_SCALE);
+
+                // Limit to screen bounds
+                comet.positionx = Math.max(Math.min(comet.positionx, SCREEN_WIDTH), 0);
+                comet.positiony = Math.max(Math.min(comet.positiony, SCREEN_HEIGHT), 0);
+
+                comet.size += (comet.targetSize - comet.size) * 0.05;
+
+                // If we're at the target size, set a new one. Think of it like a regular day at work.
+                if (Math.round(comet.size) == Math.round(comet.targetSize)) {
+                    comet.targetSize = 1 + Math.random() * 7;
+                }
+                
+                context.beginPath();
+                context.fillStyle = comet.fillColor;
+                context.strokeStyle = comet.fillColor;
+                context.lineWidth = comet.size;
+                context.moveTo(lp.x, lp.y);
+                context.lineTo(comet.positionx, comet.positiony);
+                context.stroke();
+                context.arc(comet.positionx, comet.positiony, comet.size / 2, 0, Math.PI * 2, true);
+                context.fill();
+            }
+         
+        }
+
+        
+        function canvasClicked(evt)
+        {
+            
+        }
+        function windowResizeHandler() {
+            //SCREEN_WIDTH = window.innerWidth;
+            //SCREEN_HEIGHT = window.innerHeight;
+            canvas.width = SCREEN_WIDTH;
+            canvas.height = SCREEN_HEIGHT;
+
+            canvas.style.position = 'absolute';
+            canvas.style.left = (window.innerWidth - SCREEN_WIDTH) * .5 + 'px';
+            canvas.style.top = (window.innerHeight - SCREEN_HEIGHT) * .5 + 'px';
+        }
+        function canvasMoved(evt) {
+            //add new ball
+            mouseX = event.clientX - (window.innerWidth - SCREEN_WIDTH) * .5;
+            mouseY = event.clientY - (window.innerHeight - SCREEN_HEIGHT) * .5;
+        }
+
+    </script>
+</head>
+<body onload="beginDraw();">
+    <canvas id="canvas" >
+
+    </canvas>
+</body>
+</html>
